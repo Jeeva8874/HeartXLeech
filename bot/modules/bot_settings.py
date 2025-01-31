@@ -1190,18 +1190,26 @@ async def edit_bot_settings(client, query):
         if DATABASE_URL:
             await DbManger().update_config({data[2]: value})
     elif data[1] == 'editvar':
-        handler_dict[message.chat.id] = False
-        await query.answer()
-        edit_mode = len(data) == 4
-        await update_buttons(message, data[2], data[1], edit_mode)
-        if data[2] in bool_vars or not edit_mode:
-            return
-        pfunc = partial(edit_variable, pre_message=message, key=data[2])
-        rfunc = partial(update_buttons, message, data[2], data[1], edit_mode)
-        await event_handler(client, query, pfunc, rfunc)
+        value = config_dict[data[2]]
+        if value and data[2] in ['SUDO_USERS', 'TELEGRAM_API', 'TELEGRAM_HASH', 'BASE_URL', 'IMAGES', 'BOT_TOKEN', 'DATABASE_URL', 'OWNER_ID', 'UPSTREAM_REPO', 'UPSTREAM_BRANCH'] and not await CustomFilters.owner(client, query):
+            value = 'Only owner can edit this ! sorry Broo !'
+            await query.answer(f'{value}', show_alert=True)
+        else:
+            handler_dict[message.chat.id] = False
+            await query.answer()
+            edit_mode = len(data) == 4
+            await update_buttons(message, data[2], data[1], edit_mode)
+            if data[2] in bool_vars or not edit_mode:
+                return
+            pfunc = partial(edit_variable, pre_message=message, key=data[2])
+            rfunc = partial(update_buttons, message, data[2], data[1], edit_mode)
+            await event_handler(client, query, pfunc, rfunc)
     elif data[1] == 'showvar':
         value = config_dict[data[2]]
-        if len(str(value)) > 200:
+        if value and data[2] in ['SUDO_USERS', 'TELEGRAM_API', 'TELEGRAM_HASH', 'BASE_URL', 'IMAGES', 'BOT_TOKEN', 'DATABASE_URL', 'OWNER_ID', 'UPSTREAM_REPO', 'UPSTREAM_BRANCH'] and not await CustomFilters.owner(client, query):
+            value = 'Only owner can edit this ! sorry Broo !'
+            await query.answer(f'{value}', show_alert=True)
+        elif len(str(value)) > 200:
             await query.answer()
             with BytesIO(str.encode(value)) as out_file:
                 out_file.name = f"{data[2]}.txt"
@@ -1210,6 +1218,13 @@ async def edit_bot_settings(client, query):
         elif value == '':
             value = None
         await query.answer(f'{value}', show_alert=True)
+    elif data[1] == 'editaria' and (STATE == 'edit' or data[2] == 'newkey'):
+        handler_dict[message.chat.id] = False
+        await query.answer()
+        await update_buttons(message, data[2], data[1])
+        pfunc = partial(edit_aria, pre_message=message, key=data[2])
+        rfunc = partial(update_buttons, message, 'aria')
+        await event_handler(client, query, pfunc, rfunc)
     elif data[1] == 'editaria' and (STATE == 'edit' or data[2] == 'newkey'):
         handler_dict[message.chat.id] = False
         await query.answer()
