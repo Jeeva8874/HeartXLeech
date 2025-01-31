@@ -1191,7 +1191,7 @@ async def edit_bot_settings(client, query):
             await DbManger().update_config({data[2]: value})
     elif data[1] == 'editvar':
         value = config_dict[data[2]]
-        if value and data[2] in ['SUDO_USERS', 'TELEGRAM_API', 'TELEGRAM_HASH', 'BASE_URL', 'IMAGES', 'BOT_TOKEN', 'DATABASE_URL', 'OWNER_ID', 'UPSTREAM_REPO', 'UPSTREAM_BRANCH'] and not await CustomFilters.owner(client, query):
+        if value and data[2] in ['SUDO_USERS', 'TELEGRAM_API', 'TELEGRAM_HASH', 'BASE_URL', 'IMAGES', 'BOT_TOKEN', 'DATABASE_URL', 'OWNER_ID', 'UPSTREAM_REPO', 'UPSTREAM_BRANCH', 'USER_SESSION_STRING'] and not await CustomFilters.owner(client, query):
             value = 'Only owner can edit this ! sorry Broo !'
             await query.answer(f'{value}', show_alert=True)
         else:
@@ -1206,7 +1206,7 @@ async def edit_bot_settings(client, query):
             await event_handler(client, query, pfunc, rfunc)
     elif data[1] == 'showvar':
         value = config_dict[data[2]]
-        if value and data[2] in ['SUDO_USERS', 'TELEGRAM_API', 'TELEGRAM_HASH', 'BASE_URL', 'IMAGES', 'BOT_TOKEN', 'DATABASE_URL', 'OWNER_ID', 'UPSTREAM_REPO', 'UPSTREAM_BRANCH'] and not await CustomFilters.owner(client, query):
+        if value and data[2] in ['SUDO_USERS', 'TELEGRAM_API', 'TELEGRAM_HASH', 'BASE_URL', 'IMAGES', 'BOT_TOKEN', 'DATABASE_URL', 'OWNER_ID', 'UPSTREAM_REPO', 'UPSTREAM_BRANCH', 'USER_SESSION_STRING'] and not await CustomFilters.owner(client, query):
             value = 'Only owner can edit this ! sorry Broo !'
             await query.answer(f'{value}', show_alert=True)
         elif len(str(value)) > 200:
